@@ -1,0 +1,37 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'app' => [
+        'name' => 'MidexCMS',
+        'env' => 'local',
+        'debug' => true,
+        'url' => 'http://midexcms.local',
+    ],
+    'database' => [
+        'driver' => 'pgsql',
+        'host' => 'postgres',
+        'port' => 5432,
+        'database' => 'midexcms',
+        'username' => 'postgres',
+        'password' => 'password',
+        'charset' => 'utf8',
+    ],
+    'security' => [
+        'session_name' => 'midexcms_session',
+        'csrf_token_name' => '_csrf',
+        'password_reset_ttl_minutes' => 60,
+        'login_rate_limit_attempts' => 5,
+        'login_rate_limit_minutes' => 15,
+    ],
+    'cache' => [
+        'driver' => 'file',
+        'path' => __DIR__ . '/../content/cache',
+    ],
+    'uploads' => [
+        'path' => __DIR__ . '/../content/uploads',
+        'url' => '/uploads',
+        'max_size_mb' => 10,
+    ],
+];

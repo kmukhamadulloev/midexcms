@@ -1,0 +1,10 @@
+.codex
+/config/config.php
+/content/cache/*
+!/content/cache/.gitkeep
+/content/backups/*
+!/content/backups/.gitkeep
+/content/uploads/*
+!/content/uploads/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep

@@ -1,0 +1,14 @@
+{
+  "name": "Cyberpunk Pulse Dark",
+  "key": "cyberpunk-dark",
+  "version": "0.1.0",
+  "author": "MidexCMS",
+  "templates": {
+    "layout": "layout.html",
+    "home": "home.html",
+    "page": "page.html",
+    "post": "post.html",
+    "archive": "archive.html",
+    "contact": "contact.html"
+  }
+}

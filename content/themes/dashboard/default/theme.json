@@ -1,0 +1,12 @@
+{
+  "name": "Midex Default",
+  "key": "admin",
+  "surface": "dashboard",
+  "version": "0.1.0",
+  "author": "MidexCMS",
+  "templates": {
+    "app_layout": "layouts/app.html",
+    "auth_layout": "layouts/auth.html",
+    "dashboard": "pages/dashboard.html"
+  }
+}

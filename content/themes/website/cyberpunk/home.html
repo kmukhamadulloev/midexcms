@@ -1,0 +1,26 @@
+<main id="top">
+  <section class="hero-shell shell">
+    <div class="hero-grid">
+      <div class="hero-copy reveal">
+        <p class="eyebrow"><span class="pulse-dot"></span> Home // personal node</p>
+        <h1>{{ page.title }}</h1>
+        <p class="lede">{{ site.description }}</p>
+        <article class="content-flow hero-content">{{ page.content }}</article>
+      </div>
+
+      <aside class="hero-panel reveal delay-1" aria-label="Профиль">
+        <div class="avatar-card">
+          <div class="avatar-orbit" aria-hidden="true"></div>
+          <div class="avatar-core"><span>{{ site.title }}</span></div>
+          <div class="scanline" aria-hidden="true"></div>
+        </div>
+        <div class="terminal-card">
+          <div class="terminal-head"><span></span><span></span><span></span><small>site.boot</small></div>
+          <pre><code>$ boot {{ site.title }}
+status: online
+mode: cyberpunk</code></pre>
+        </div>
+      </aside>
+    </div>
+  </section>
+</main>

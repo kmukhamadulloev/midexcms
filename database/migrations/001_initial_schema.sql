@@ -1,0 +1,214 @@
+CREATE TABLE IF NOT EXISTS users (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(190) NOT NULL,
+    email VARCHAR(190) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    last_login_at TIMESTAMP NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS password_resets (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token_hash VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    used_at TIMESTAMP NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS settings (
+    id BIGSERIAL PRIMARY KEY,
+    key VARCHAR(190) NOT NULL UNIQUE,
+    value JSONB NOT NULL,
+    group_name VARCHAR(100) NOT NULL DEFAULT 'general',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS pages (
+    id BIGSERIAL PRIMARY KEY,
+    parent_id BIGINT NULL REFERENCES pages(id) ON DELETE SET NULL,
+    type VARCHAR(50) NOT NULL DEFAULT 'page',
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(190) NOT NULL,
+    path VARCHAR(500) NOT NULL UNIQUE,
+    excerpt TEXT NULL,
+    content_mode VARCHAR(20) NOT NULL DEFAULT 'markdown',
+    content_raw TEXT NULL,
+    content_html TEXT NULL,
+    cover_image_id BIGINT NULL,
+    status VARCHAR(30) NOT NULL DEFAULT 'draft',
+    template VARCHAR(100) NULL,
+    seo_title VARCHAR(255) NULL,
+    seo_description TEXT NULL,
+    seo_keywords TEXT NULL,
+    og_title VARCHAR(255) NULL,
+    og_description TEXT NULL,
+    og_image_id BIGINT NULL,
+    robots_index BOOLEAN NOT NULL DEFAULT TRUE,
+    robots_follow BOOLEAN NOT NULL DEFAULT TRUE,
+    comments_enabled BOOLEAN NULL,
+    comments_mode VARCHAR(30) NULL,
+    views_count BIGINT NOT NULL DEFAULT 0,
+    likes_count BIGINT NOT NULL DEFAULT 0,
+    comments_count BIGINT NOT NULL DEFAULT 0,
+    sort_order INT NOT NULL DEFAULT 0,
+    published_at TIMESTAMP NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL
+);
+
+CREATE INDEX IF NOT EXISTS pages_type_idx ON pages(type);
+CREATE INDEX IF NOT EXISTS pages_status_idx ON pages(status);
+CREATE INDEX IF NOT EXISTS pages_parent_idx ON pages(parent_id);
+CREATE INDEX IF NOT EXISTS pages_published_idx ON pages(published_at);
+CREATE UNIQUE INDEX IF NOT EXISTS pages_parent_slug_unique ON pages(parent_id, slug) WHERE deleted_at IS NULL;
+
+CREATE TABLE IF NOT EXISTS page_revisions (
+    id BIGSERIAL PRIMARY KEY,
+    page_id BIGINT NOT NULL REFERENCES pages(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    content_mode VARCHAR(20) NOT NULL,
+    content_raw TEXT NULL,
+    content_html TEXT NULL,
+    meta JSONB NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS media (
+    id BIGSERIAL PRIMARY KEY,
+    disk VARCHAR(50) NOT NULL DEFAULT 'local',
+    path VARCHAR(500) NOT NULL,
+    url VARCHAR(500) NOT NULL,
+    filename VARCHAR(255) NOT NULL,
+    original_filename VARCHAR(255) NOT NULL,
+    mime_type VARCHAR(100) NOT NULL,
+    size_bytes BIGINT NOT NULL,
+    width INT NULL,
+    height INT NULL,
+    alt TEXT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS menus (
+    id BIGSERIAL PRIMARY KEY,
+    key VARCHAR(100) NOT NULL UNIQUE,
+    name VARCHAR(190) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS menu_items (
+    id BIGSERIAL PRIMARY KEY,
+    menu_id BIGINT NOT NULL REFERENCES menus(id) ON DELETE CASCADE,
+    parent_id BIGINT NULL REFERENCES menu_items(id) ON DELETE CASCADE,
+    page_id BIGINT NULL REFERENCES pages(id) ON DELETE SET NULL,
+    label VARCHAR(190) NOT NULL,
+    url VARCHAR(500) NULL,
+    target VARCHAR(20) NOT NULL DEFAULT '_self',
+    sort_order INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS forms (
+    id BIGSERIAL PRIMARY KEY,
+    key VARCHAR(100) NOT NULL UNIQUE,
+    name VARCHAR(190) NOT NULL,
+    description TEXT NULL,
+    success_message TEXT NULL,
+    send_email BOOLEAN NOT NULL DEFAULT TRUE,
+    email_to VARCHAR(190) NULL,
+    save_submissions BOOLEAN NOT NULL DEFAULT TRUE,
+    captcha_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS form_fields (
+    id BIGSERIAL PRIMARY KEY,
+    form_id BIGINT NOT NULL REFERENCES forms(id) ON DELETE CASCADE,
+    type VARCHAR(50) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    label VARCHAR(190) NOT NULL,
+    placeholder VARCHAR(190) NULL,
+    options JSONB NULL,
+    is_required BOOLEAN NOT NULL DEFAULT FALSE,
+    sort_order INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS form_submissions (
+    id BIGSERIAL PRIMARY KEY,
+    form_id BIGINT NOT NULL REFERENCES forms(id) ON DELETE CASCADE,
+    page_id BIGINT NULL REFERENCES pages(id) ON DELETE SET NULL,
+    payload JSONB NOT NULL,
+    ip_hash VARCHAR(255) NULL,
+    user_agent_hash VARCHAR(255) NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS comments (
+    id BIGSERIAL PRIMARY KEY,
+    page_id BIGINT NOT NULL REFERENCES pages(id) ON DELETE CASCADE,
+    parent_id BIGINT NULL REFERENCES comments(id) ON DELETE CASCADE,
+    author_name VARCHAR(190) NOT NULL,
+    author_email VARCHAR(190) NULL,
+    author_url VARCHAR(500) NULL,
+    content TEXT NOT NULL,
+    status VARCHAR(30) NOT NULL DEFAULT 'pending',
+    ip_hash VARCHAR(255) NULL,
+    user_agent_hash VARCHAR(255) NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS comments_page_idx ON comments(page_id);
+CREATE INDEX IF NOT EXISTS comments_status_idx ON comments(status);
+
+CREATE TABLE IF NOT EXISTS likes (
+    id BIGSERIAL PRIMARY KEY,
+    page_id BIGINT NOT NULL REFERENCES pages(id) ON DELETE CASCADE,
+    visitor_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(page_id, visitor_hash)
+);
+
+CREATE TABLE IF NOT EXISTS page_views (
+    id BIGSERIAL PRIMARY KEY,
+    page_id BIGINT NULL REFERENCES pages(id) ON DELETE SET NULL,
+    path VARCHAR(500) NOT NULL,
+    visitor_hash VARCHAR(255) NULL,
+    referer TEXT NULL,
+    user_agent_hash VARCHAR(255) NULL,
+    device_type VARCHAR(50) NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS page_views_page_idx ON page_views(page_id);
+CREATE INDEX IF NOT EXISTS page_views_created_idx ON page_views(created_at);
+
+CREATE TABLE IF NOT EXISTS page_view_daily_stats (
+    id BIGSERIAL PRIMARY KEY,
+    page_id BIGINT NULL REFERENCES pages(id) ON DELETE CASCADE,
+    stat_date DATE NOT NULL,
+    views BIGINT NOT NULL DEFAULT 0,
+    unique_views BIGINT NOT NULL DEFAULT 0,
+    UNIQUE(page_id, stat_date)
+);
+
+CREATE TABLE IF NOT EXISTS rate_limits (
+    id BIGSERIAL PRIMARY KEY,
+    action VARCHAR(100) NOT NULL,
+    identifier_hash VARCHAR(255) NOT NULL,
+    attempts INT NOT NULL DEFAULT 1,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(action, identifier_hash)
+);

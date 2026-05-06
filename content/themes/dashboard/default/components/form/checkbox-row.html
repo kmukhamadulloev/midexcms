@@ -1,0 +1,9 @@
+<div class="form-row checkbox-row">
+    <label class="checkbox-label">
+        <input type="hidden" name="{{ name }}" value="0">
+        <input id="{{ name }}" name="{{ name }}" type="checkbox" value="1"{{ checked_attr_html }}>
+        <span>{{ label }}</span>
+    </label>
+    <p class="helper-text">{{ helper }}</p>
+    {{ error_html }}
+</div>

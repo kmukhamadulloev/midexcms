@@ -1,0 +1,14 @@
+{
+  "name": "Stack Stress Cyberpunk",
+  "key": "cyberpunk",
+  "version": "0.2.0",
+  "author": "Stack//Stress",
+  "templates": {
+    "layout": "layout.html",
+    "home": "home.html",
+    "page": "page.html",
+    "post": "post.html",
+    "archive": "archive.html",
+    "contact": "contact.html"
+  }
+}

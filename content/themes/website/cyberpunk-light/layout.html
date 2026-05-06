@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ meta.title }}</title>
+  <meta name="description" content="{{ meta.description }}">
+  <meta name="keywords" content="{{ meta.keywords }}">
+  <meta name="robots" content="{{ meta.robots }}">
+  <link rel="canonical" href="{{ meta.canonical }}">
+  <link rel="stylesheet" href="{{ site.theme_asset_base }}/style.css">
+</head>
+<body class="theme-cyberpunk theme-cyberpunk-light">
+  {{ include:partials/header.html }}
+  {{ content }}
+  {{ include:partials/footer.html }}
+  <script src="{{ site.theme_asset_base }}/app.js"></script>
+</body>
+</html>

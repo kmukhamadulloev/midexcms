@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" data-admin-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{{ dashboard_theme_asset_base }}/admin.css">
+</head>
+<body class="admin-body">
+    <div class="admin-backdrop" aria-hidden="true">
+        <span class="backdrop-orb orb-a"></span>
+        <span class="backdrop-orb orb-b"></span>
+        <span class="backdrop-orb orb-c"></span>
+    </div>
+    <canvas class="admin-particles" data-admin-particles aria-hidden="true"></canvas>
+    <div class="admin-shell">
+        <aside class="admin-sidebar" id="admin-sidebar" data-admin-sidebar>
+            <div class="brand-block">
+                <img class="brand-logo" src="{{ dashboard_theme_asset_base }}/logo.png" alt="Midex CMS">
+                <div class="brand-controls">
+                    <span class="brand-theme-label">Light</span>
+                    <label class="theme-switch" aria-label="Toggle admin theme">
+                        <input type="checkbox" class="theme-switch-input" data-admin-theme-toggle>
+                        <span class="theme-switch-track">
+                            <span class="theme-switch-thumb"></span>
+                        </span>
+                    </label>
+                    <span class="brand-theme-label">Dark</span>
+                </div>
+            </div>
+            <nav class="admin-nav">{{ navigation_html }}</nav>
+        </aside>
+        <main class="admin-main">
+            <header class="page-header">
+                <div>
+                    <p class="page-kicker">Admin Workspace</p>
+                    <h1>{{ title }}</h1>
+                </div>
+                <div class="page-header-actions">
+                    <button type="button" class="ghost-button mobile-nav-toggle" data-admin-sidebar-toggle aria-expanded="false" aria-controls="admin-sidebar">
+                        Menu
+                    </button>
+                </div>
+            </header>
+            <div class="admin-content">
+                {{ flash_html }}
+                {{ stats_html }}
+                {{ content }}
+            </div>
+        </main>
+    </div>
+    <button type="button" class="admin-overlay" data-admin-overlay aria-label="Close navigation"></button>
+    <script src="{{ dashboard_theme_asset_base }}/admin.js"></script>
+</body>
+</html>
