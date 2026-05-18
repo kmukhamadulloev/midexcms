@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     'app' => [
-        'name' => 'MidexCMS',
+        'name' => 'Midex CMS',
         'env' => 'local',
         'debug' => true,
         'url' => 'http://midexcms.local',

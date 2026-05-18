@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Core\Cache;
+namespace MidexCMS\Core\Cache;
 
 use RuntimeException;
 
@@ -56,7 +56,7 @@ final class FileCache implements CacheInterface
 
     public function has(string $key): bool
     {
-        return $this->get($key, '__plaincms_missing__') !== '__plaincms_missing__';
+        return $this->get($key, '__midexcms_missing__') !== '__midexcms_missing__';
     }
 
     public function forget(string $key): void

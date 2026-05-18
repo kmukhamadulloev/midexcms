@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Pages;
+namespace MidexCMS\Modules\Pages;
 
-use PlainCMS\Core\Sanitizer;
+use MidexCMS\Core\Sanitizer;
 
 final class ContentRenderer
 {

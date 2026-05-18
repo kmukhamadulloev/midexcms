@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Likes;
+namespace MidexCMS\Modules\Likes;
 
-use PlainCMS\Core\Database;
+use MidexCMS\Core\Database;
 
 final class LikeRepository
 {

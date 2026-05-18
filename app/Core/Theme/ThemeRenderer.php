@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Core\Theme;
+namespace MidexCMS\Core\Theme;
 
-use PlainCMS\Core\Cache\CacheInterface;
-use PlainCMS\Core\Csrf;
-use PlainCMS\Core\Flash;
-use PlainCMS\Core\Request;
-use PlainCMS\Core\SettingsService;
-use PlainCMS\Core\TemplateEngine;
-use PlainCMS\Modules\Comments\CommentService;
-use PlainCMS\Modules\Likes\LikeService;
-use PlainCMS\Modules\Menus\MenuService;
-use PlainCMS\Modules\Pages\ContentRenderer;
-use PlainCMS\Modules\Pages\ShortcodeRenderer;
-use PlainCMS\Modules\SEO\SeoService;
+use MidexCMS\Core\Cache\CacheInterface;
+use MidexCMS\Core\Csrf;
+use MidexCMS\Core\Flash;
+use MidexCMS\Core\Request;
+use MidexCMS\Core\SettingsService;
+use MidexCMS\Core\TemplateEngine;
+use MidexCMS\Modules\Comments\CommentService;
+use MidexCMS\Modules\Likes\LikeService;
+use MidexCMS\Modules\Menus\MenuService;
+use MidexCMS\Modules\Pages\ContentRenderer;
+use MidexCMS\Modules\Pages\ShortcodeRenderer;
+use MidexCMS\Modules\SEO\SeoService;
 
 final class ThemeRenderer
 {

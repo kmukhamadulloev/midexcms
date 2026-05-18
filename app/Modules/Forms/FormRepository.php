@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Forms;
+namespace MidexCMS\Modules\Forms;
 
-use PlainCMS\Core\Database;
+use MidexCMS\Core\Database;
 
 final class FormRepository
 {

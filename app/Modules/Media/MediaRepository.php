@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Media;
+namespace MidexCMS\Modules\Media;
 
-use PlainCMS\Core\Database;
+use MidexCMS\Core\Database;
 
 final class MediaRepository
 {

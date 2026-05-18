@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Core;
+namespace MidexCMS\Core;
 
 use Closure;
 use RuntimeException;

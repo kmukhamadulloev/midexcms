@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Analytics;
+namespace MidexCMS\Modules\Analytics;
 
-use PlainCMS\Core\Database;
+use MidexCMS\Core\Database;
 
 final class AnalyticsRepository
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Analytics;
+namespace MidexCMS\Modules\Analytics;
 
 final class AnalyticsService
 {

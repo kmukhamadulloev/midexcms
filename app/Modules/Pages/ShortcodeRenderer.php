@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Pages;
+namespace MidexCMS\Modules\Pages;
 
-use PlainCMS\Modules\Forms\FormService;
-use PlainCMS\Modules\Media\MediaService;
+use MidexCMS\Modules\Forms\FormService;
+use MidexCMS\Modules\Media\MediaService;
 
 final class ShortcodeRenderer
 {

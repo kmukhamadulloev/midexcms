@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Core\Support;
+namespace MidexCMS\Core\Support;
 
 final class Arr
 {

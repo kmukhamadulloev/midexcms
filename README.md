@@ -1,6 +1,6 @@
-# PlainCMS
+# Midex CMS
 
-PlainCMS is a minimal SSR CMS for blogs, pages, landing pages, and small content sites. It runs on PHP and PostgreSQL, uses a modular-monolith structure, and does not require Composer or Node/npm at runtime.
+Midex CMS is a minimal SSR CMS for blogs, pages, landing pages, and small content sites. It runs on PHP and PostgreSQL, uses a modular-monolith structure, and does not require Composer or Node/npm at runtime.
 
 ## Highlights
 
@@ -50,10 +50,10 @@ README.md
 Serve the app from `public/`.
 
 ```caddyfile
-plaincms.local {
+midexcms.local {
     tls internal
 
-    root * /var/www/plaincms/public
+    root * /var/www/midexcms/public
 
     php_fastcgi php:9000
 
@@ -64,8 +64,8 @@ plaincms.local {
 Without local TLS:
 
 ```caddyfile
-plaincms.local {
-    root * /var/www/plaincms/public
+midexcms.local {
+    root * /var/www/midexcms/public
 
     php_fastcgi php:9000
 

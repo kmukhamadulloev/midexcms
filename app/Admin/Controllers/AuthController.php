@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Admin\Controllers;
+namespace MidexCMS\Admin\Controllers;
 
-use PlainCMS\Core\Admin\AdminView;
-use PlainCMS\Core\Auth;
-use PlainCMS\Core\Config;
-use PlainCMS\Core\Csrf;
-use PlainCMS\Core\Database;
-use PlainCMS\Core\Flash;
-use PlainCMS\Core\PasswordResetService;
-use PlainCMS\Core\RateLimiter;
-use PlainCMS\Core\Request;
-use PlainCMS\Core\Response;
-use PlainCMS\Core\Session;
-use PlainCMS\Core\Validator;
+use MidexCMS\Core\Admin\AdminView;
+use MidexCMS\Core\Auth;
+use MidexCMS\Core\Config;
+use MidexCMS\Core\Csrf;
+use MidexCMS\Core\Database;
+use MidexCMS\Core\Flash;
+use MidexCMS\Core\PasswordResetService;
+use MidexCMS\Core\RateLimiter;
+use MidexCMS\Core\Request;
+use MidexCMS\Core\Response;
+use MidexCMS\Core\Session;
+use MidexCMS\Core\Validator;
 use RuntimeException;
 
 final class AuthController

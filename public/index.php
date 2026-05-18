@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use PlainCMS\Core\App;
+use MidexCMS\Core\App;
 
 $rootPath = dirname(__DIR__);
 

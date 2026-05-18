@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Http\Controllers;
+namespace MidexCMS\Http\Controllers;
 
-use PlainCMS\Core\Request;
-use PlainCMS\Core\Response;
-use PlainCMS\Core\Theme\ThemeRenderer;
-use PlainCMS\Modules\Analytics\AnalyticsService;
-use PlainCMS\Modules\Pages\PageService;
+use MidexCMS\Core\Request;
+use MidexCMS\Core\Response;
+use MidexCMS\Core\Theme\ThemeRenderer;
+use MidexCMS\Modules\Analytics\AnalyticsService;
+use MidexCMS\Modules\Pages\PageService;
 
 final class PublicPageController
 {

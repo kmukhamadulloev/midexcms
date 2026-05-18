@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Core;
+namespace MidexCMS\Core;
 
-use PlainCMS\Core\Theme\ThemeLoader;
+use MidexCMS\Core\Theme\ThemeLoader;
 use RuntimeException;
 
 final class TemplateEngine

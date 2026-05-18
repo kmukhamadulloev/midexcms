@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Pages;
+namespace MidexCMS\Modules\Pages;
 
 final class PagePreviewSigner
 {

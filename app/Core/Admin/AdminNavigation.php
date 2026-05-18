@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Core\Admin;
+namespace MidexCMS\Core\Admin;
 
 final class AdminNavigation
 {

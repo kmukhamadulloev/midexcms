@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Http\Controllers;
+namespace MidexCMS\Http\Controllers;
 
-use PlainCMS\Core\Request;
-use PlainCMS\Core\Response;
-use PlainCMS\Core\SettingsService;
+use MidexCMS\Core\Request;
+use MidexCMS\Core\Response;
+use MidexCMS\Core\SettingsService;
 
 final class HomeController
 {
@@ -27,7 +27,7 @@ final class HomeController
 
         return Response::html(<<<HTML
 <main style="max-width:860px;margin:48px auto;padding:0 20px;font-family:Georgia, 'Times New Roman', serif;">
-    <p style="letter-spacing:0.14em;text-transform:uppercase;color:#8a7254;">MidexCMS</p>
+    <p style="letter-spacing:0.14em;text-transform:uppercase;color:#8a7254;">Midex CMS</p>
     <h1>{$title}</h1>
     <p>{$description}</p>
     <p style="color:#6b7280;">Active theme: {$theme}. Public theme rendering arrives in Phase 7, but site context is already flowing through controlled settings.</p>

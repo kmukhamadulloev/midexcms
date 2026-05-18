@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Core\Install;
+namespace MidexCMS\Core\Install;
 
-use PlainCMS\Core\Database;
-use PlainCMS\Core\MigrationRunner;
-use PlainCMS\Core\Sanitizer;
-use PlainCMS\Core\Support\Str;
+use MidexCMS\Core\Database;
+use MidexCMS\Core\MigrationRunner;
+use MidexCMS\Core\Sanitizer;
+use MidexCMS\Core\Support\Str;
 use RuntimeException;
 
 final class InstallerService

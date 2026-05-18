@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\SEO;
+namespace MidexCMS\Modules\SEO;
 
-use PlainCMS\Core\Cache\CacheInterface;
-use PlainCMS\Core\Support\Str;
-use PlainCMS\Modules\Pages\PageRepository;
+use MidexCMS\Core\Cache\CacheInterface;
+use MidexCMS\Core\Support\Str;
+use MidexCMS\Modules\Pages\PageRepository;
 
 final class SeoService
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Pages;
+namespace MidexCMS\Modules\Pages;
 
-use PlainCMS\Core\Cache\CacheInterface;
-use PlainCMS\Core\Support\Str;
-use PlainCMS\Core\Support\Url;
+use MidexCMS\Core\Cache\CacheInterface;
+use MidexCMS\Core\Support\Str;
+use MidexCMS\Core\Support\Url;
 
 final class PageService
 {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Core;
+namespace MidexCMS\Core;
 
-use PlainCMS\Core\Admin\AdminNavigation;
-use PlainCMS\Core\Cache\CacheInterface;
+use MidexCMS\Core\Admin\AdminNavigation;
+use MidexCMS\Core\Cache\CacheInterface;
 
 final class SettingsService
 {
@@ -68,8 +68,8 @@ final class SettingsService
         $settings = $this->all();
 
         return [
-            'site_title' => (string) ($settings['site.title'] ?? 'MidexCMS Site'),
-            'site_description' => (string) ($settings['site.description'] ?? 'Simple website powered by MidexCMS'),
+            'site_title' => (string) ($settings['site.title'] ?? 'Midex CMS Site'),
+            'site_description' => (string) ($settings['site.description'] ?? 'Simple website powered by Midex CMS'),
             'dashboard_theme_active' => (string) ($settings['dashboard.theme.active'] ?? 'default'),
             'theme_active' => (string) ($settings['theme.active'] ?? 'default'),
             'comments_enabled' => (bool) ($settings['comments.enabled'] ?? true),
@@ -216,8 +216,8 @@ final class SettingsService
     private function defaults(): array
     {
         return [
-            'site.title' => 'MidexCMS Site',
-            'site.description' => 'Simple website powered by MidexCMS',
+            'site.title' => 'Midex CMS Site',
+            'site.description' => 'Simple website powered by Midex CMS',
             'dashboard.theme.active' => 'default',
             'theme.active' => 'default',
             'comments.enabled' => true,

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Core;
+namespace MidexCMS\Core;
 
-use PlainCMS\Core\Cache\CacheInterface;
+use MidexCMS\Core\Cache\CacheInterface;
 
 final class RateLimiter
 {

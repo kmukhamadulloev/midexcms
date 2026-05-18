@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Admin\Controllers;
+namespace MidexCMS\Admin\Controllers;
 
-use PlainCMS\Core\Admin\AdminNavigation;
-use PlainCMS\Core\Admin\AdminView;
-use PlainCMS\Core\Auth;
-use PlainCMS\Core\Csrf;
-use PlainCMS\Core\Flash;
-use PlainCMS\Core\Request;
-use PlainCMS\Core\Response;
-use PlainCMS\Modules\Backups\BackupService;
+use MidexCMS\Core\Admin\AdminNavigation;
+use MidexCMS\Core\Admin\AdminView;
+use MidexCMS\Core\Auth;
+use MidexCMS\Core\Csrf;
+use MidexCMS\Core\Flash;
+use MidexCMS\Core\Request;
+use MidexCMS\Core\Response;
+use MidexCMS\Modules\Backups\BackupService;
 use RuntimeException;
 
 final class BackupController

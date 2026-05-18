@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Menus;
+namespace MidexCMS\Modules\Menus;
 
-use PlainCMS\Core\Database;
+use MidexCMS\Core\Database;
 
 final class MenuRepository
 {

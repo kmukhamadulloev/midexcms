@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Http\Controllers;
+namespace MidexCMS\Http\Controllers;
 
-use PlainCMS\Core\Request;
-use PlainCMS\Core\Response;
-use PlainCMS\Modules\SEO\SeoService;
+use MidexCMS\Core\Request;
+use MidexCMS\Core\Response;
+use MidexCMS\Modules\SEO\SeoService;
 
 final class SeoController
 {

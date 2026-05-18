@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Backups;
+namespace MidexCMS\Modules\Backups;
 
-use PlainCMS\Core\Cache\CacheInterface;
-use PlainCMS\Core\Database;
+use MidexCMS\Core\Cache\CacheInterface;
+use MidexCMS\Core\Database;
 use RuntimeException;
 use ZipArchive;
 

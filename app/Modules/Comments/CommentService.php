@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Comments;
+namespace MidexCMS\Modules\Comments;
 
-use PlainCMS\Core\Cache\CacheInterface;
-use PlainCMS\Core\SettingsService;
+use MidexCMS\Core\Cache\CacheInterface;
+use MidexCMS\Core\SettingsService;
 use RuntimeException;
 
 final class CommentService

@@ -2,7 +2,7 @@
   "name": "Midex Default",
   "key": "default",
   "version": "0.1.0",
-  "author": "MidexCMS",
+  "author": "Midex CMS",
   "templates": {
     "layout": "layout.html",
     "home": "home.html",

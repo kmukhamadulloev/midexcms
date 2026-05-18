@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Admin\Controllers;
+namespace MidexCMS\Admin\Controllers;
 
-use PlainCMS\Core\Admin\AdminNavigation;
-use PlainCMS\Core\Admin\AdminView;
-use PlainCMS\Core\Auth;
-use PlainCMS\Core\Csrf;
-use PlainCMS\Core\Flash;
-use PlainCMS\Core\Request;
-use PlainCMS\Core\Response;
-use PlainCMS\Core\Sanitizer;
-use PlainCMS\Core\Validator;
-use PlainCMS\Modules\Pages\PageService;
+use MidexCMS\Core\Admin\AdminNavigation;
+use MidexCMS\Core\Admin\AdminView;
+use MidexCMS\Core\Auth;
+use MidexCMS\Core\Csrf;
+use MidexCMS\Core\Flash;
+use MidexCMS\Core\Request;
+use MidexCMS\Core\Response;
+use MidexCMS\Core\Sanitizer;
+use MidexCMS\Core\Validator;
+use MidexCMS\Modules\Pages\PageService;
 use RuntimeException;
 
 final class PageController

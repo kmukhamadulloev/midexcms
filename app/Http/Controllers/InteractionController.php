@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Http\Controllers;
+namespace MidexCMS\Http\Controllers;
 
-use PlainCMS\Core\Csrf;
-use PlainCMS\Core\Flash;
-use PlainCMS\Core\RateLimiter;
-use PlainCMS\Core\Request;
-use PlainCMS\Core\Response;
-use PlainCMS\Modules\Comments\CommentService;
-use PlainCMS\Modules\Forms\FormService;
-use PlainCMS\Modules\Likes\LikeService;
-use PlainCMS\Modules\Pages\PageService;
+use MidexCMS\Core\Csrf;
+use MidexCMS\Core\Flash;
+use MidexCMS\Core\RateLimiter;
+use MidexCMS\Core\Request;
+use MidexCMS\Core\Response;
+use MidexCMS\Modules\Comments\CommentService;
+use MidexCMS\Modules\Forms\FormService;
+use MidexCMS\Modules\Likes\LikeService;
+use MidexCMS\Modules\Pages\PageService;
 use RuntimeException;
 
 final class InteractionController

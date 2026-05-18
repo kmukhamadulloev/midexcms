@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Pages;
+namespace MidexCMS\Modules\Pages;
 
-use PlainCMS\Core\Database;
+use MidexCMS\Core\Database;
 
 final class PageRepository
 {

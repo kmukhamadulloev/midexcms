@@ -1,4 +1,4 @@
-# Stack Stress Cyberpunk Theme for MidexCMS
+# Stack Stress Cyberpunk Theme for Midex CMS
 
 Адаптированная CMS-версия персонального neon/cyberpunk шаблона.
 

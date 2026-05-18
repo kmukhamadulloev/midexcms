@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Core\Cache;
+namespace MidexCMS\Core\Cache;
 
 final class NullCache implements CacheInterface
 {

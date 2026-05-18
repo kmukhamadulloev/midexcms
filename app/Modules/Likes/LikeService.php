@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Likes;
+namespace MidexCMS\Modules\Likes;
 
-use PlainCMS\Core\Cache\CacheInterface;
+use MidexCMS\Core\Cache\CacheInterface;
 
 final class LikeService
 {

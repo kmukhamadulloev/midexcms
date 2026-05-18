@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Comments;
+namespace MidexCMS\Modules\Comments;
 
-use PlainCMS\Core\Database;
+use MidexCMS\Core\Database;
 
 final class CommentRepository
 {

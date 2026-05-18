@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Forms;
+namespace MidexCMS\Modules\Forms;
 
-use PlainCMS\Core\Cache\CacheInterface;
-use PlainCMS\Core\Support\Str;
+use MidexCMS\Core\Cache\CacheInterface;
+use MidexCMS\Core\Support\Str;
 use RuntimeException;
 
 final class FormService

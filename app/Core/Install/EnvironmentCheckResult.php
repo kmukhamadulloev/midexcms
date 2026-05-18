@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Core\Install;
+namespace MidexCMS\Core\Install;
 
 final class EnvironmentCheckResult
 {

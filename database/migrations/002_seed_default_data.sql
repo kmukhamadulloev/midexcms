@@ -1,7 +1,7 @@
 INSERT INTO settings (key, value, group_name)
 VALUES
-    ('site.title', '{"value":"MidexCMS Site"}', 'site'),
-    ('site.description', '{"value":"Simple website powered by MidexCMS"}', 'site'),
+    ('site.title', '{"value":"Midex CMS Site"}', 'site'),
+    ('site.description', '{"value":"Simple website powered by Midex CMS"}', 'site'),
     ('theme.active', '{"value":"default"}', 'theme'),
     ('comments.enabled', '{"value":true}', 'comments'),
     ('comments.moderation_required', '{"value":true}', 'comments')

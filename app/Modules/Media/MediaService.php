@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Modules\Media;
+namespace MidexCMS\Modules\Media;
 
-use PlainCMS\Core\Cache\CacheInterface;
+use MidexCMS\Core\Cache\CacheInterface;
 use RuntimeException;
 
 final class MediaService

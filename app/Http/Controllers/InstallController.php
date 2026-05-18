@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PlainCMS\Http\Controllers;
+namespace MidexCMS\Http\Controllers;
 
-use PlainCMS\Core\Csrf;
-use PlainCMS\Core\Install\EnvironmentChecker;
-use PlainCMS\Core\Install\InstallerService;
-use PlainCMS\Core\Install\InstallerState;
-use PlainCMS\Core\Request;
-use PlainCMS\Core\Response;
-use PlainCMS\Core\Sanitizer;
-use PlainCMS\Core\Session;
-use PlainCMS\Core\Validator;
+use MidexCMS\Core\Csrf;
+use MidexCMS\Core\Install\EnvironmentChecker;
+use MidexCMS\Core\Install\InstallerService;
+use MidexCMS\Core\Install\InstallerState;
+use MidexCMS\Core\Request;
+use MidexCMS\Core\Response;
+use MidexCMS\Core\Sanitizer;
+use MidexCMS\Core\Session;
+use MidexCMS\Core\Validator;
 use Throwable;
 
 final class InstallController
@@ -154,9 +154,9 @@ final class InstallController
         }
 
         $payload = [
-            'site_name' => (string) $request->input('site_name', 'MidexCMS'),
-            'site_title' => (string) $request->input('site_title', 'MidexCMS Site'),
-            'site_description' => (string) $request->input('site_description', 'Simple website powered by MidexCMS'),
+            'site_name' => (string) $request->input('site_name', 'Midex CMS'),
+            'site_title' => (string) $request->input('site_title', 'Midex CMS Site'),
+            'site_description' => (string) $request->input('site_description', 'Simple website powered by Midex CMS'),
             'site_url' => (string) $request->input('site_url', 'http://midexcms.local'),
         ];
 
@@ -212,7 +212,7 @@ final class InstallController
         return Response::html(
             '<main style="max-width:760px;margin:48px auto;padding:0 20px;font-family:Georgia, \'Times New Roman\', serif;">'
             . '<p style="letter-spacing:0.14em;text-transform:uppercase;color:#8a7254;">Installation complete</p>'
-            . '<h1>MidexCMS is ready.</h1>'
+            . '<h1>Midex CMS is ready.</h1>'
             . '<p>Your default pages, contact form, and main navigation have been created. You can sign in to the admin panel or visit the public site now.</p>'
             . '<p><a href="/admin/login">Open admin login</a> · <a href="/">View site</a></p>'
             . '</main>'
@@ -306,9 +306,9 @@ final class InstallController
         $databaseUser = htmlspecialchars((string) ($database['username'] ?? 'postgres'), ENT_QUOTES, 'UTF-8');
         $adminName = htmlspecialchars((string) ($admin['name'] ?? ''), ENT_QUOTES, 'UTF-8');
         $adminEmail = htmlspecialchars((string) ($admin['email'] ?? ''), ENT_QUOTES, 'UTF-8');
-        $siteName = htmlspecialchars((string) ($site['site_name'] ?? 'MidexCMS'), ENT_QUOTES, 'UTF-8');
-        $siteTitle = htmlspecialchars((string) ($site['site_title'] ?? 'MidexCMS Site'), ENT_QUOTES, 'UTF-8');
-        $siteDescription = htmlspecialchars((string) ($site['site_description'] ?? 'Simple website powered by MidexCMS'), ENT_QUOTES, 'UTF-8');
+        $siteName = htmlspecialchars((string) ($site['site_name'] ?? 'Midex CMS'), ENT_QUOTES, 'UTF-8');
+        $siteTitle = htmlspecialchars((string) ($site['site_title'] ?? 'Midex CMS Site'), ENT_QUOTES, 'UTF-8');
+        $siteDescription = htmlspecialchars((string) ($site['site_description'] ?? 'Simple website powered by Midex CMS'), ENT_QUOTES, 'UTF-8');
         $siteUrl = htmlspecialchars((string) ($site['site_url'] ?? 'http://midexcms.local'), ENT_QUOTES, 'UTF-8');
         $disabled = $readyForFinish ? '' : 'disabled';
 
@@ -318,7 +318,7 @@ final class InstallController
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MidexCMS Installer</title>
+    <title>Midex CMS Installer</title>
     <style>
         body { font-family: Georgia, "Times New Roman", serif; margin: 0; background: #f6f3ec; color: #1f2937; }
         .wrap { max-width: 980px; margin: 0 auto; padding: 32px 18px 56px; }
@@ -339,7 +339,7 @@ final class InstallController
 <body>
     <div class="wrap">
         <div class="hero">
-            <h1>MidexCMS Installer</h1>
+            <h1>Midex CMS Installer</h1>
             <p>Phase 3 bootstrap flow: check the environment, verify PostgreSQL, define the first admin, set site defaults, then write config, schema, seed data, and the install lock.</p>
         </div>
         {$flashHtml}
