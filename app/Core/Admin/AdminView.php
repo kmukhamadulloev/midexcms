@@ -53,9 +53,13 @@ final class AdminView
         $flashHtml = '';
 
         if ($flash !== null) {
+            $isError = ($flash['type'] ?? 'success') === 'error';
             $flashHtml = sprintf(
-                '<div class="%s">%s</div>',
-                ($flash['type'] ?? 'success') === 'error' ? 'flash flash-error' : 'flash flash-success',
+                '<div class="%s" role="%s"><span class="flash-accent">%s</span><div class="flash-copy"><strong>%s</strong><p>%s</p></div></div>',
+                $isError ? 'flash flash-error' : 'flash flash-success',
+                $isError ? 'alert' : 'status',
+                $isError ? 'Needs attention' : 'Update',
+                $isError ? 'Action blocked' : 'Everything synced',
                 $this->escape((string) ($flash['message'] ?? '')),
             );
         }
@@ -395,7 +399,7 @@ final class AdminView
 
         return $this->templates->render('pages/menus-index.html', [
             'create_panel_html' => $this->panel('Create menu', $createBody),
-            'table_panel_html' => $this->panel('Menus', $this->table(['Name', 'Key', 'Actions'], $rows, 'No menus created yet.', 3)),
+            'table_panel_html' => $this->panel('Menus', '<p class="helper-text">Create reusable menus here, then place them into theme slots from Template Modules.</p>' . $this->table(['Name', 'Key', 'Actions'], $rows, 'No menus created yet.', 3)),
         ]);
     }
 
@@ -405,53 +409,99 @@ final class AdminView
      */
     public function renderMenuEditorPage(array $menu, array $pages, string $csrfInputName, string $csrfToken): string
     {
-        $items = $menu['items'] ?? [];
-        $rows = '';
-        $count = max(5, count($items));
+        $items = is_array($menu['items'] ?? null) ? array_values($menu['items']) : [];
+        $cards = '';
 
-        for ($index = 0; $index < $count; $index++) {
-            $item = $items[$index] ?? [
-                'label' => '',
-                'page_id' => null,
-                'url' => '',
-                'target' => '_self',
-                'sort_order' => $index + 1,
-                'parent_id' => null,
-            ];
-
-            $pageOptions = '<option value="">Custom URL</option>';
-
-            foreach ($pages as $page) {
-                $pageOptions .= '<option value="' . $this->escape((string) $page['id']) . '"' . ((string) ($item['page_id'] ?? '') === (string) $page['id'] ? ' selected' : '') . '>' . $this->escape((string) $page['path']) . '</option>';
+        foreach ($items as $index => $item) {
+            if (!is_array($item)) {
+                continue;
             }
 
-            $parentOptions = '<option value="">No parent</option>';
-
-            foreach ($items as $parentIndex => $parentItem) {
-                $parentOptions .= '<option value="' . ($parentIndex + 1) . '"' . ((string) ($item['parent_id'] ?? '') === (string) $parentItem['id'] ? ' selected' : '') . '>Row ' . ($parentIndex + 1) . ' · ' . $this->escape((string) $parentItem['label']) . '</option>';
-            }
-
-            $rows .= '<tr>'
-                . '<td>' . ($index + 1) . '</td>'
-                . '<td><input name="item_label[]" value="' . $this->escape((string) ($item['label'] ?? '')) . '"></td>'
-                . '<td><select name="item_page_id[]">' . $pageOptions . '</select></td>'
-                . '<td><input name="item_url[]" value="' . $this->escape((string) ($item['url'] ?? '')) . '" placeholder="/services"></td>'
-                . '<td><select name="item_parent_index[]">' . $parentOptions . '</select></td>'
-                . '<td><input type="number" name="item_sort_order[]" value="' . $this->escape((string) ($item['sort_order'] ?? ($index + 1))) . '"></td>'
-                . '<td><select name="item_target[]"><option value="_self"' . (($item['target'] ?? '_self') === '_self' ? ' selected' : '') . '>Same tab</option><option value="_blank"' . (($item['target'] ?? '_self') === '_blank' ? ' selected' : '') . '>New tab</option></select></td>'
-                . '</tr>';
+            $cards .= $this->renderMenuEditorItemCard($item, $pages, $items, $index + 1);
         }
 
-        $body = '<form method="post" action="/admin/menus/' . (int) $menu['id'] . '" class="settings-form">'
+        $templateCard = $this->renderMenuEditorItemCard([
+            'row_id' => '__ROW_ID__',
+            'label' => '',
+            'link_type' => 'page',
+            'page_id' => '',
+            'url' => '',
+            'target' => '_self',
+            'parent_row_id' => '',
+        ], $pages, [], 0, true);
+
+        $body = '<form method="post" action="/admin/menus/' . (int) $menu['id'] . '" class="settings-form menu-builder-form" data-menu-builder>'
             . '<input type="hidden" name="' . $this->escape($csrfInputName) . '" value="' . $this->escape($csrfToken) . '">'
+            . '<input type="hidden" name="next_item_index" value="' . (int) ($menu['next_item_index'] ?? (count($items) + 1)) . '" data-menu-next-index>'
             . $this->inputRow('name', 'Menu name', 'text', (string) $menu['name'], '')
-            . '<p class="helper-text">Each row can link to a published page or a custom URL. Parent rows create nested navigation.</p>'
-            . $this->table(['#', 'Label', 'Page', 'Custom URL', 'Parent', 'Sort', 'Target'], $rows, 'No menu items yet.', 7)
+            . '<div class="menu-builder-shell">'
+            . '<div class="menu-builder-head"><div><p class="page-kicker">Reusable navigation graph</p><h3>Items</h3><p class="helper-text">Drag items to reorder them. Use the parent selector to build multi-level navigation. The buttons still work without JavaScript.</p></div>'
+            . '<div class="menu-builder-actions"><button type="submit" name="add_item" value="1" data-menu-add>+ Add menu item</button></div></div>'
+            . '<div class="menu-builder-list" data-menu-items>' . ($cards !== '' ? $cards : '<p class="helper-text menu-builder-empty">No items yet. Add the first menu item to begin.</p>') . '</div>'
+            . '<template data-menu-item-template>' . $templateCard . '</template>'
+            . '</div>'
             . $this->submitRow('<button type="submit">Save menu</button>')
             . '</form>';
 
         return $this->templates->render('pages/menu-editor.html', [
             'editor_panel_html' => $this->panel('Menu details', $body),
+        ]);
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $slots
+     * @param array<int, array<string, mixed>> $menus
+     * @param array<string, array<string, mixed>> $placements
+     */
+    public function renderTemplateModulesPage(string $themeKey, string $themeName, array $slots, array $menus, array $placements, string $csrfInputName, string $csrfToken): string
+    {
+        if ($slots === []) {
+            return $this->render('pages/template-modules.html', [
+                'overview_panel_html' => $this->panel('Theme slots', '<p>No menu-capable slots are declared for the active theme <strong>' . $this->escape($themeName) . '</strong>.</p><p class="helper-text">Switch to the cyberpunk website theme to use slot-based menu placement in this release.</p>'),
+                'tray_panel_html' => '',
+                'canvas_panel_html' => '',
+            ]);
+        }
+
+        $menuCards = '';
+
+        foreach ($menus as $menu) {
+            $menuCards .= '<article class="component-card" draggable="true" data-menu-component data-menu-id="' . (int) $menu['id'] . '" data-menu-name="' . $this->escape((string) $menu['name']) . '">'
+                . '<p class="page-kicker">Menu</p><strong>' . $this->escape((string) $menu['name']) . '</strong><span>' . $this->escape((string) $menu['key']) . '</span></article>';
+        }
+
+        $slotCards = '';
+
+        foreach ($slots as $slot) {
+            $slotKey = (string) $slot['key'];
+            $placement = $placements[$slotKey] ?? null;
+            $selectedMenuId = is_array($placement) ? (string) ($placement['component_ref_id'] ?? '') : '';
+            $menuOptions = '<option value="">No menu assigned</option>';
+
+            foreach ($menus as $menu) {
+                $menuOptions .= '<option value="' . (int) $menu['id'] . '"' . ($selectedMenuId === (string) $menu['id'] ? ' selected' : '') . '>' . $this->escape((string) $menu['name']) . '</option>';
+            }
+
+            $slotCards .= '<article class="slot-card" data-slot-card data-slot-key="' . $this->escape($slotKey) . '">'
+                . '<div class="slot-card-head"><div><p class="page-kicker">Slot</p><h3>' . $this->escape((string) $slot['label']) . '</h3></div>'
+                . '<span class="badge badge-outline">' . $this->escape($slotKey) . '</span></div>'
+                . '<p class="helper-text">' . $this->escape((string) ($slot['description'] ?? 'Drop a menu into this slot.')) . '</p>'
+                . '<div class="slot-card-state">' . (is_array($placement)
+                    ? '<strong>' . $this->escape((string) ($placement['menu_name'] ?? 'Assigned menu')) . '</strong><span>Currently rendered in this theme slot.</span>'
+                    : '<strong>Empty slot</strong><span>Drop a menu here or pick one below.</span>') . '</div>'
+                . '<form method="post" action="/admin/template-modules" class="slot-form" data-slot-form>'
+                . '<input type="hidden" name="' . $this->escape($csrfInputName) . '" value="' . $this->escape($csrfToken) . '">'
+                . '<input type="hidden" name="slot_key" value="' . $this->escape($slotKey) . '">'
+                . '<label class="sr-only" for="slot-' . $this->escape($slotKey) . '">Assigned menu</label>'
+                . '<select id="slot-' . $this->escape($slotKey) . '" name="menu_id" data-slot-select>' . $menuOptions . '</select>'
+                . '<div class="submit-row"><button type="submit">Save slot</button></div>'
+                . '</form></article>';
+        }
+
+        return $this->render('pages/template-modules.html', [
+            'overview_panel_html' => $this->panel('Theme slots', '<p><strong>' . $this->escape($themeName) . '</strong> is active for the public site.</p><p class="helper-text">This screen manages reusable menu placement for the active website theme. In v1 each slot accepts one menu.</p>'),
+            'tray_panel_html' => $this->panel('Reusable menus', '<div class="component-tray">' . ($menuCards !== '' ? $menuCards : '<p class="helper-text">Create a menu first to place it into a slot.</p>') . '</div>'),
+            'canvas_panel_html' => $this->panel('Cyberpunk slot canvas', '<div class="slot-grid">' . $slotCards . '</div>'),
         ]);
     }
 
@@ -811,6 +861,90 @@ final class AdminView
         };
 
         return '<span class="badge ' . $tone . '">' . $this->escape($label) . '</span>';
+    }
+
+    /**
+     * @param array<string, mixed> $item
+     * @param array<int, array<string, mixed>> $pages
+     * @param array<int, array<string, mixed>> $items
+     */
+    private function renderMenuEditorItemCard(array $item, array $pages, array $items, int $position, bool $isTemplate = false): string
+    {
+        $rowId = (string) ($item['row_id'] ?? '');
+        $linkType = (string) ($item['link_type'] ?? 'page');
+        $pageId = (string) ($item['page_id'] ?? '');
+        $parentRowId = (string) ($item['parent_row_id'] ?? '');
+        $pageOptions = '<option value="">Choose a page</option>';
+
+        foreach ($pages as $page) {
+            $pageOptions .= '<option value="' . $this->escape((string) $page['id']) . '"' . ($pageId === (string) $page['id'] ? ' selected' : '') . '>' . $this->escape((string) $page['path']) . '</option>';
+        }
+
+        $parentOptions = '<option value="">Top level</option>';
+
+        foreach ($items as $candidate) {
+            if (!is_array($candidate) || (string) ($candidate['row_id'] ?? '') === '' || (string) ($candidate['row_id'] ?? '') === $rowId) {
+                continue;
+            }
+
+            $candidateRowId = (string) $candidate['row_id'];
+            $candidateLabel = trim((string) ($candidate['label'] ?? ''));
+            $parentOptions .= '<option value="' . $this->escape($candidateRowId) . '"' . ($parentRowId === $candidateRowId ? ' selected' : '') . '>'
+                . $this->escape($candidateLabel !== '' ? $candidateLabel : $candidateRowId)
+                . '</option>';
+        }
+
+        $targetOptions = '<option value="_self"' . ((string) ($item['target'] ?? '_self') === '_self' ? ' selected' : '') . '>Same tab</option>'
+            . '<option value="_blank"' . ((string) ($item['target'] ?? '_self') === '_blank' ? ' selected' : '') . '>New tab</option>';
+        $depth = $isTemplate ? 0 : $this->menuItemDepth($items, $rowId);
+        $label = $isTemplate ? '' : '<span class="menu-item-index" data-menu-item-index>' . $position . '</span>';
+
+        return '<article class="menu-builder-item" draggable="true" data-menu-item data-row-id="' . $this->escape($rowId) . '" style="--menu-depth:' . $depth . ';">'
+            . '<input type="hidden" name="item_row_id[]" value="' . $this->escape($rowId) . '">'
+            . '<header class="menu-builder-item-head"><div class="menu-builder-item-meta"><span class="menu-drag-handle" aria-hidden="true">::</span>' . $label . '<strong>' . $this->escape(trim((string) ($item['label'] ?? '')) !== '' ? (string) $item['label'] : 'Untitled item') . '</strong></div>'
+            . '<div class="menu-builder-item-actions"><button type="submit" class="ghost-button" name="move_up_item" value="' . $this->escape($rowId) . '" data-menu-move-up>Up</button><button type="submit" class="ghost-button" name="move_down_item" value="' . $this->escape($rowId) . '" data-menu-move-down>Down</button><button type="submit" class="ghost-button danger-link" name="remove_item" value="' . $this->escape($rowId) . '" data-menu-remove>Remove</button></div></header>'
+            . '<div class="menu-builder-item-grid">'
+            . '<label><span>Label</span><input name="item_label[]" value="' . $this->escape((string) ($item['label'] ?? '')) . '" placeholder="Docs"></label>'
+            . '<label><span>Link source</span><select name="item_link_type[]" data-link-type><option value="page"' . ($linkType === 'page' ? ' selected' : '') . '>Published page</option><option value="custom_url"' . ($linkType === 'custom_url' ? ' selected' : '') . '>Custom URL</option></select></label>'
+            . '<label class="menu-page-field"' . ($linkType === 'custom_url' ? ' hidden' : '') . '><span>Page</span><select name="item_page_id[]" data-link-page>' . $pageOptions . '</select></label>'
+            . '<label class="menu-url-field"' . ($linkType === 'page' ? ' hidden' : '') . '><span>Custom URL</span><input name="item_url[]" value="' . $this->escape((string) ($item['url'] ?? '')) . '" placeholder="/services" data-link-url></label>'
+            . '<label><span>Parent</span><select name="item_parent_row_id[]" data-parent-select>' . $parentOptions . '</select></label>'
+            . '<label><span>Target</span><select name="item_target[]">' . $targetOptions . '</select></label>'
+            . '</div></article>';
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $items
+     */
+    private function menuItemDepth(array $items, string $rowId): int
+    {
+        $parents = [];
+
+        foreach ($items as $item) {
+            if (!is_array($item) || !isset($item['row_id'])) {
+                continue;
+            }
+
+            $parents[(string) $item['row_id']] = (string) ($item['parent_row_id'] ?? '');
+        }
+
+        $depth = 0;
+        $cursor = $rowId;
+        $visited = [];
+
+        while (($parents[$cursor] ?? '') !== '') {
+            $parent = (string) $parents[$cursor];
+
+            if (isset($visited[$parent])) {
+                break;
+            }
+
+            $visited[$parent] = true;
+            $depth++;
+            $cursor = $parent;
+        }
+
+        return min($depth, 5);
     }
 
     /**

@@ -862,9 +862,39 @@ html[data-theme="light"] .site-footer {
   align-items: center;
   justify-content: space-between;
   gap: 18px;
+  flex-wrap: wrap;
   color: var(--muted);
   font-family: var(--font-mono);
   font-size: 0.88rem;
+}
+
+.footer-nav .menu-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-nav .menu-item a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.92rem;
+  border-bottom: 1px solid transparent;
+  transition: color .2s ease, border-color .2s ease;
+}
+
+.footer-nav .menu-item a:hover,
+.footer-nav .menu-item a:focus-visible {
+  color: var(--accent);
+  border-color: currentColor;
+}
+
+.footer-nav .menu-sublist {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0 0 0 1rem;
 }
 
 .footer-inner p {

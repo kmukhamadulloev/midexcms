@@ -1,8 +1,24 @@
 {
-  "name": "Stack Stress Cyberpunk",
+  "name": "Cyberpunk",
   "key": "cyberpunk",
   "version": "0.2.0",
-  "author": "Stack//Stress",
+  "author": "Midex CMS Team",
+  "module_slots": [
+    {
+      "key": "header_nav",
+      "label": "Header Navigation",
+      "allowed_components": ["menu"],
+      "multiple": false,
+      "description": "Primary navigation inside the cyberpunk header."
+    },
+    {
+      "key": "footer_links",
+      "label": "Footer Links",
+      "allowed_components": ["menu"],
+      "multiple": false,
+      "description": "Compact footer navigation links."
+    }
+  ],
   "templates": {
     "layout": "layout.html",
     "home": "home.html",

@@ -54,6 +54,8 @@ return [
         ['methods' => ['POST'], 'path' => '/admin/menus', 'controller' => 'menu', 'action' => 'store'],
         ['methods' => ['GET'], 'path' => '/admin/menus/{id}/edit', 'controller' => 'menu', 'action' => 'edit'],
         ['methods' => ['POST'], 'path' => '/admin/menus/{id}', 'controller' => 'menu', 'action' => 'update'],
+        ['methods' => ['GET'], 'path' => '/admin/template-modules', 'controller' => 'template_module', 'action' => 'index'],
+        ['methods' => ['POST'], 'path' => '/admin/template-modules', 'controller' => 'template_module', 'action' => 'update'],
         ['methods' => ['GET'], 'path' => '/admin/settings', 'controller' => 'settings', 'action' => 'index'],
         ['methods' => ['POST'], 'path' => '/admin/settings', 'controller' => 'settings', 'action' => 'update'],
         ['methods' => ['GET'], 'path' => '/admin/{section}', 'controller' => 'module_placeholder', 'action' => 'show'],

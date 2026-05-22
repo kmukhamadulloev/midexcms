@@ -173,6 +173,7 @@ final class ThemeRenderer
         ];
 
         return [
+            'slot' => $this->menus->renderSlotsForTheme($themeKey),
             'site' => [
                 'title' => (string) $site['site']['title'],
                 'description' => (string) $site['site']['description'],
@@ -214,6 +215,7 @@ final class ThemeRenderer
         }
 
         return [
+            'slot' => $this->menus->renderSlotsForTheme($themeKey),
             'site' => [
                 'title' => (string) $site['site']['title'],
                 'description' => (string) $site['site']['description'],

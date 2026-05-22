@@ -41,9 +41,14 @@ final class ThemeLoader
         }
 
         $templates = $manifest['templates'] ?? [];
+        $moduleSlots = $manifest['module_slots'] ?? [];
 
         if (!is_array($templates)) {
             throw new RuntimeException(sprintf('Theme templates are invalid for theme "%s".', $key));
+        }
+
+        if (!is_array($moduleSlots)) {
+            throw new RuntimeException(sprintf('Theme module slots are invalid for theme "%s".', $key));
         }
 
         $theme = [
@@ -53,6 +58,7 @@ final class ThemeLoader
             'author' => $manifest['author'] ?? 'Unknown',
             'path' => $themePath,
             'templates' => $templates,
+            'module_slots' => $this->normalizeSlots($moduleSlots),
         ];
 
         $this->cache->put($cacheKey, $theme, 3600);
@@ -104,5 +110,41 @@ final class ThemeLoader
         }
 
         return $realPath;
+    }
+
+    /**
+     * @param array<int|string, mixed> $slots
+     * @return array<int, array{key: string, label: string, allowed_components: array<int, string>, multiple: bool, description: string}>
+     */
+    private function normalizeSlots(array $slots): array
+    {
+        $normalized = [];
+
+        foreach ($slots as $slot) {
+            if (!is_array($slot)) {
+                continue;
+            }
+
+            $key = trim((string) ($slot['key'] ?? ''));
+
+            if ($key === '') {
+                continue;
+            }
+
+            $allowedComponents = array_values(array_filter(
+                array_map(static fn (mixed $value): string => trim((string) $value), (array) ($slot['allowed_components'] ?? [])),
+                static fn (string $value): bool => $value !== ''
+            ));
+
+            $normalized[] = [
+                'key' => $key,
+                'label' => trim((string) ($slot['label'] ?? $key)),
+                'allowed_components' => $allowedComponents,
+                'multiple' => (bool) ($slot['multiple'] ?? false),
+                'description' => trim((string) ($slot['description'] ?? '')),
+            ];
+        }
+
+        return $normalized;
     }
 }

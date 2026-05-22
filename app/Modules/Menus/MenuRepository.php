@@ -92,7 +92,7 @@ final class MenuRepository
                 );
 
                 $row = $database->selectOne('SELECT currval(pg_get_serial_sequence(\'menu_items\', \'id\')) AS id');
-                $idMap[$item['row_index']] = (int) ($row['id'] ?? 0);
+                $idMap[$item['client_id']] = (int) ($row['id'] ?? 0);
             }
 
             foreach ($items as $item) {
@@ -103,7 +103,7 @@ final class MenuRepository
                 $database->statement(
                     'UPDATE menu_items SET parent_id = :parent_id WHERE id = :id',
                     [
-                        'id' => $idMap[$item['row_index']] ?? 0,
+                        'id' => $idMap[$item['client_id']] ?? 0,
                         'parent_id' => $idMap[$item['parent_ref']] ?? null,
                     ]
                 );

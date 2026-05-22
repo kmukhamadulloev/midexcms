@@ -43,6 +43,7 @@ final class InstallerService
             $userId = $this->createAdminUser($db, $adminData);
             $this->seedPages($db, $siteData);
             $this->seedMainMenu($db);
+            $this->seedMenuPlacements($db);
             $this->upsertSetting($db, 'site.title', ['value' => $siteData['site_title']], 'site');
             $this->upsertSetting($db, 'site.description', ['value' => $siteData['site_description']], 'site');
             $this->upsertSetting($db, 'theme.active', ['value' => 'default'], 'theme');
@@ -196,6 +197,39 @@ final class InstallerService
                 'key' => $key,
                 'value' => json_encode($value, JSON_THROW_ON_ERROR),
                 'group_name' => $group,
+            ]
+        );
+    }
+
+    private function seedMenuPlacements(Database $database): void
+    {
+        $menu = $database->selectOne('SELECT id FROM menus WHERE key = :key LIMIT 1', ['key' => 'main']);
+
+        if ($menu === null) {
+            return;
+        }
+
+        $existing = $database->selectOne(
+            'SELECT id FROM template_module_placements WHERE theme_key = :theme_key AND slot_key = :slot_key LIMIT 1',
+            [
+                'theme_key' => 'cyberpunk',
+                'slot_key' => 'header_nav',
+            ]
+        );
+
+        if ($existing !== null) {
+            return;
+        }
+
+        $database->statement(
+            'INSERT INTO template_module_placements (theme_key, slot_key, component_type, component_ref_id, position)
+             VALUES (:theme_key, :slot_key, :component_type, :component_ref_id, :position)',
+            [
+                'theme_key' => 'cyberpunk',
+                'slot_key' => 'header_nav',
+                'component_type' => 'menu',
+                'component_ref_id' => (int) $menu['id'],
+                'position' => 1,
             ]
         );
     }

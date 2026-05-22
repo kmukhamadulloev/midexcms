@@ -1,5 +1,8 @@
 <footer class="site-footer">
   <div class="shell footer-inner">
+    <nav class="footer-nav" aria-label="Футер ссылки">
+      {{ slot.footer_links }}
+    </nav>
     <p>© <span data-current-year></span> {{ site.title }}. Built for the neon web.</p>
     <a class="back-top" href="#top" aria-label="Наверх">↑</a>
   </div>

@@ -67,7 +67,7 @@ final class TemplateEngine
                 return '';
             }
 
-            if (in_array($key, $this->safeHtmlSlots, true)) {
+            if (in_array($key, $this->safeHtmlSlots, true) || str_starts_with($key, 'slot.')) {
                 return (string) $value;
             }
 

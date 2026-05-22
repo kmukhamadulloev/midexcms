@@ -20,6 +20,7 @@ final class BackupService
         'media',
         'menus',
         'menu_items',
+        'template_module_placements',
         'forms',
         'form_fields',
         'form_submissions',

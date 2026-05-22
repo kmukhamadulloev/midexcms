@@ -13,6 +13,7 @@ use MidexCMS\Admin\Controllers\FormController;
 use MidexCMS\Admin\Controllers\MediaController;
 use MidexCMS\Admin\Controllers\ModulePlaceholderController;
 use MidexCMS\Admin\Controllers\MenuController;
+use MidexCMS\Admin\Controllers\TemplateModuleController;
 use MidexCMS\Admin\Controllers\PageController;
 use MidexCMS\Admin\Controllers\CommentController;
 use MidexCMS\Admin\Controllers\SettingsController;
@@ -40,6 +41,7 @@ use MidexCMS\Modules\Likes\LikeRepository;
 use MidexCMS\Modules\Likes\LikeService;
 use MidexCMS\Modules\Media\MediaRepository;
 use MidexCMS\Modules\Media\MediaService;
+use MidexCMS\Modules\Menus\MenuPlacementRepository;
 use MidexCMS\Modules\Menus\MenuRepository;
 use MidexCMS\Modules\Menus\MenuService;
 use MidexCMS\Modules\Pages\ContentRenderer;
@@ -220,6 +222,7 @@ final class App
             'upload_asset' => fn (): UploadAssetController => $this->makeUploadAssetController(),
             'media' => fn (): MediaController => $this->makeMediaController(),
             'menu' => fn (): MenuController => $this->makeMenuController(),
+            'template_module' => fn (): TemplateModuleController => $this->makeTemplateModuleController(),
         ];
     }
 
@@ -546,6 +549,8 @@ final class App
     {
         return new MenuService(
             new MenuRepository($this->database()),
+            new MenuPlacementRepository($this->database()),
+            $this->themeLoader(),
             $this->cache,
         );
     }
@@ -597,6 +602,18 @@ final class App
             $this->csrf,
             $this->flash,
             new Sanitizer(),
+            $this->menuService(),
+            $this->makeAdminView(),
+        );
+    }
+
+    private function makeTemplateModuleController(): TemplateModuleController
+    {
+        return new TemplateModuleController(
+            $this->auth,
+            $this->csrf,
+            $this->flash,
+            $this->settings(),
             $this->menuService(),
             $this->makeAdminView(),
         );

@@ -37,6 +37,16 @@ function setAdminTheme(theme) {
   for (const label of document.querySelectorAll('[data-theme-label]')) {
     label.textContent = theme === 'dark' ? 'Dark' : 'Light';
   }
+
+  for (const option of document.querySelectorAll('[data-theme-option]')) {
+    if (!(option instanceof HTMLElement)) {
+      continue;
+    }
+
+    const isActive = option.dataset.themeOption === theme;
+    option.classList.toggle('is-active', isActive);
+    option.classList.toggle('is-inactive', !isActive);
+  }
 }
 
 function toggleAdminSidebar(forceOpen) {
@@ -499,6 +509,348 @@ function initParticles() {
   window.requestAnimationFrame(draw);
 }
 
+function initMenuBuilder() {
+  for (const form of document.querySelectorAll('[data-menu-builder]')) {
+    if (!(form instanceof HTMLFormElement)) {
+      continue;
+    }
+
+    const list = form.querySelector('[data-menu-items]');
+    const template = form.querySelector('[data-menu-item-template]');
+    const nextIndexField = form.querySelector('[data-menu-next-index]');
+
+    if (!(list instanceof HTMLElement) || !(template instanceof HTMLTemplateElement) || !(nextIndexField instanceof HTMLInputElement)) {
+      continue;
+    }
+
+    let dragged = null;
+
+    const cards = () => Array.from(list.querySelectorAll('[data-menu-item]')).filter((item) => item instanceof HTMLElement);
+
+    const updateEmptyState = () => {
+      const empty = list.querySelector('.menu-builder-empty');
+      const hasCards = cards().length > 0;
+
+      if (!hasCards && !(empty instanceof HTMLElement)) {
+        const note = document.createElement('p');
+        note.className = 'helper-text menu-builder-empty';
+        note.textContent = 'No items yet. Add the first menu item to begin.';
+        list.appendChild(note);
+      }
+
+      if (hasCards && empty instanceof HTMLElement) {
+        empty.remove();
+      }
+    };
+
+    const setDepth = (card, depth) => {
+      card.style.setProperty('--menu-depth', String(Math.min(depth, 5)));
+    };
+
+    const refreshParentOptions = () => {
+      const options = cards().map((card) => {
+        const rowId = card.dataset.rowId || '';
+        const labelInput = card.querySelector('input[name="item_label[]"]');
+        const label = labelInput instanceof HTMLInputElement && labelInput.value.trim() !== '' ? labelInput.value.trim() : rowId;
+
+        return { rowId, label };
+      });
+
+      const parents = new Map();
+
+      cards().forEach((card) => {
+        const select = card.querySelector('[data-parent-select]');
+
+        if (select instanceof HTMLSelectElement) {
+          parents.set(card.dataset.rowId || '', select.value);
+        }
+      });
+
+      const computeDepth = (rowId, visited = new Set()) => {
+        const parent = parents.get(rowId) || '';
+
+        if (!parent || visited.has(parent)) {
+          return 0;
+        }
+
+        visited.add(parent);
+
+        return 1 + computeDepth(parent, visited);
+      };
+
+      cards().forEach((card, index) => {
+        const rowId = card.dataset.rowId || '';
+        const title = card.querySelector('.menu-builder-item-meta strong');
+        const indexBadge = card.querySelector('[data-menu-item-index]');
+        const labelInput = card.querySelector('input[name="item_label[]"]');
+        const select = card.querySelector('[data-parent-select]');
+
+        if (title instanceof HTMLElement && labelInput instanceof HTMLInputElement) {
+          title.textContent = labelInput.value.trim() !== '' ? labelInput.value.trim() : 'Untitled item';
+        }
+
+        if (indexBadge instanceof HTMLElement) {
+          indexBadge.textContent = String(index + 1);
+        }
+
+        if (select instanceof HTMLSelectElement) {
+          const current = select.value;
+          select.innerHTML = '';
+
+          const topLevel = document.createElement('option');
+          topLevel.value = '';
+          topLevel.textContent = 'Top level';
+          select.appendChild(topLevel);
+
+          for (const option of options) {
+            if (option.rowId === rowId) {
+              continue;
+            }
+
+            const element = document.createElement('option');
+            element.value = option.rowId;
+            element.textContent = option.label;
+
+            if (option.rowId === current) {
+              element.selected = true;
+            }
+
+            select.appendChild(element);
+          }
+        }
+
+        setDepth(card, computeDepth(rowId));
+      });
+    };
+
+    const syncLinkFields = (card) => {
+      const linkType = card.querySelector('[data-link-type]');
+      const pageField = card.querySelector('.menu-page-field');
+      const urlField = card.querySelector('.menu-url-field');
+
+      if (!(linkType instanceof HTMLSelectElement) || !(pageField instanceof HTMLElement) || !(urlField instanceof HTMLElement)) {
+        return;
+      }
+
+      const isPage = linkType.value === 'page';
+      pageField.hidden = !isPage;
+      urlField.hidden = isPage;
+    };
+
+    const syncAll = () => {
+      updateEmptyState();
+      refreshParentOptions();
+
+      for (const card of cards()) {
+        syncLinkFields(card);
+      }
+    };
+
+    const insertFromTemplate = () => {
+      const currentIndex = Number.parseInt(nextIndexField.value || '1', 10) || 1;
+      const rowId = `new-${currentIndex}`;
+      nextIndexField.value = String(currentIndex + 1);
+      const html = template.innerHTML.replaceAll('__ROW_ID__', rowId);
+      list.insertAdjacentHTML('beforeend', html);
+      syncAll();
+    };
+
+    form.addEventListener('click', (event) => {
+      const addButton = event.target instanceof Element ? event.target.closest('[data-menu-add]') : null;
+
+      if (addButton instanceof HTMLButtonElement) {
+        event.preventDefault();
+        insertFromTemplate();
+        return;
+      }
+
+      const removeButton = event.target instanceof Element ? event.target.closest('[data-menu-remove]') : null;
+
+      if (removeButton instanceof HTMLButtonElement) {
+        event.preventDefault();
+        removeButton.closest('[data-menu-item]')?.remove();
+        syncAll();
+        return;
+      }
+
+      const moveUpButton = event.target instanceof Element ? event.target.closest('[data-menu-move-up]') : null;
+
+      if (moveUpButton instanceof HTMLButtonElement) {
+        event.preventDefault();
+        const card = moveUpButton.closest('[data-menu-item]');
+
+        if (card && card.previousElementSibling) {
+          card.parentElement?.insertBefore(card, card.previousElementSibling);
+          syncAll();
+        }
+
+        return;
+      }
+
+      const moveDownButton = event.target instanceof Element ? event.target.closest('[data-menu-move-down]') : null;
+
+      if (moveDownButton instanceof HTMLButtonElement) {
+        event.preventDefault();
+        const card = moveDownButton.closest('[data-menu-item]');
+
+        if (card && card.nextElementSibling) {
+          card.parentElement?.insertBefore(card.nextElementSibling, card);
+          syncAll();
+        }
+      }
+    });
+
+    form.addEventListener('input', (event) => {
+      const card = event.target instanceof Element ? event.target.closest('[data-menu-item]') : null;
+
+      if (card instanceof HTMLElement) {
+        syncLinkFields(card);
+        refreshParentOptions();
+      }
+    });
+
+    form.addEventListener('change', (event) => {
+      const card = event.target instanceof Element ? event.target.closest('[data-menu-item]') : null;
+
+      if (card instanceof HTMLElement) {
+        syncAll();
+      }
+    });
+
+    list.addEventListener('dragstart', (event) => {
+      const card = event.target instanceof Element ? event.target.closest('[data-menu-item]') : null;
+
+      if (!(card instanceof HTMLElement) || !(event.target instanceof HTMLElement)) {
+        return;
+      }
+
+      dragged = card;
+      card.classList.add('is-dragging');
+      event.dataTransfer?.setData('text/plain', card.dataset.rowId || '');
+      event.dataTransfer?.setDragImage(card, 40, 20);
+    });
+
+    list.addEventListener('dragend', () => {
+      if (dragged instanceof HTMLElement) {
+        dragged.classList.remove('is-dragging');
+      }
+
+      dragged = null;
+
+      for (const card of cards()) {
+        card.classList.remove('is-drop-target');
+      }
+    });
+
+    list.addEventListener('dragover', (event) => {
+      event.preventDefault();
+
+      if (!(dragged instanceof HTMLElement)) {
+        return;
+      }
+
+      const target = event.target instanceof Element ? event.target.closest('[data-menu-item]') : null;
+
+      for (const card of cards()) {
+        card.classList.toggle('is-drop-target', card === target && card !== dragged);
+      }
+
+      if (!(target instanceof HTMLElement) || target === dragged) {
+        return;
+      }
+
+      const rect = target.getBoundingClientRect();
+      const before = event.clientY < rect.top + rect.height / 2;
+      list.insertBefore(dragged, before ? target : target.nextElementSibling);
+    });
+
+    list.addEventListener('drop', (event) => {
+      event.preventDefault();
+      syncAll();
+    });
+
+    syncAll();
+  }
+}
+
+function initTemplateModuleSlots() {
+  const menuCards = Array.from(document.querySelectorAll('[data-menu-component]'));
+  const slotCards = Array.from(document.querySelectorAll('[data-slot-card]'));
+
+  if (menuCards.length === 0 || slotCards.length === 0) {
+    return;
+  }
+
+  let draggedMenu = null;
+
+  for (const card of menuCards) {
+    if (!(card instanceof HTMLElement)) {
+      continue;
+    }
+
+    card.addEventListener('dragstart', (event) => {
+      draggedMenu = card;
+      card.classList.add('is-dragging');
+      event.dataTransfer?.setData('text/plain', card.dataset.menuId || '');
+    });
+
+    card.addEventListener('dragend', () => {
+      card.classList.remove('is-dragging');
+      draggedMenu = null;
+
+      for (const slot of slotCards) {
+        if (slot instanceof HTMLElement) {
+          slot.classList.remove('is-drop-target');
+        }
+      }
+    });
+  }
+
+  for (const slot of slotCards) {
+    if (!(slot instanceof HTMLElement)) {
+      continue;
+    }
+
+    slot.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      slot.classList.add('is-drop-target');
+    });
+
+    slot.addEventListener('dragleave', () => {
+      slot.classList.remove('is-drop-target');
+    });
+
+    slot.addEventListener('drop', (event) => {
+      event.preventDefault();
+      slot.classList.remove('is-drop-target');
+
+      if (!(draggedMenu instanceof HTMLElement)) {
+        return;
+      }
+
+      const form = slot.querySelector('[data-slot-form]');
+      const select = slot.querySelector('[data-slot-select]');
+
+      if (!(form instanceof HTMLFormElement) || !(select instanceof HTMLSelectElement)) {
+        return;
+      }
+
+      const nextValue = draggedMenu.dataset.menuId || '';
+
+      if (select.value && select.value !== nextValue) {
+        const currentLabel = select.selectedOptions[0] ? select.selectedOptions[0].textContent || 'the current menu' : 'the current menu';
+
+        if (!window.confirm(`Replace ${currentLabel} in this slot?`)) {
+          return;
+        }
+      }
+
+      select.value = nextValue;
+      form.requestSubmit();
+    });
+  }
+}
+
 document.addEventListener('click', async (event) => {
   const copyTarget = event.target instanceof Element ? event.target.closest('[data-copy-text]') : null;
 
@@ -596,4 +948,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initAdminCharts();
   initChartRangeSwitchers();
   initParticles();
+  initMenuBuilder();
+  initTemplateModuleSlots();
 });
